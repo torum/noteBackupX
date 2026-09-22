@@ -1,0 +1,191 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:noteBackupX.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="noteBackupX.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        xmlns:ia="using:Xaml.Behaviors.Interactions.Animated"
+        xmlns:mod="clr-namespace:noteBackupX.Models"
+        Width="800" Height="900"
+        MinWidth="800" MinHeight="450"
+        WindowDecorations="Full"
+        ExtendClientAreaToDecorationsHint="True"
+        WindowStartupLocation="Manual"
+        Title="noteBackupX">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="24,0,24,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="48"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0" Margin="0 0 0 0">
+            <HyperlinkButton NavigateUri="https://github.com/torum/noteBackupX" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock TextDecorations="{x:Null}" Text="{Binding AppTitleVer}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontWeight="SemiBold" Opacity="1" HorizontalAlignment="Center">
+                </TextBlock>
+            </HyperlinkButton>
+        </Grid>
+
+        <Grid Grid.Row="1" Grid.Column="0" Margin="0 0 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60" />
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Label Content="note ID" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"></Label>
+            <TextBox x:Name="SearchQueryTextBox" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <Button Content="取得" IsDefault="True" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="80" Height="30" Command="{Binding GetNoteCommand}"></Button>
+        </Grid>
+
+        <Border Grid.Row="2" BorderBrush="{StaticResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+            <Grid Name="DummyHeader" Height="34" Margin="1,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="150"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Background="Transparent" BorderThickness="0,0,1,0" Opacity="0.5"/>
+                <Grid Grid.Column="0" Name="SearchColumn1">
+                    <TextBlock Name="SearchColumn1x" Text="ステータス" Opacity="0.8" HorizontalAlignment="Left" Padding="12,0,0,0" VerticalAlignment="Center"></TextBlock>
+                </Grid>
+
+                <Border Grid.Column="1" Background="Transparent" BorderThickness="0,0,1,0" Opacity="0.5"/>
+                <Grid Grid.Column="1" Name="SearchColumn2">
+                    <TextBlock Name="SearchColumn2x" Text="タイトル" Opacity="0.8" HorizontalAlignment="Left" Padding="12,0,0,0" VerticalAlignment="Center"></TextBlock>
+                </Grid>
+
+                <Border Grid.Column="2" Background="Transparent" BorderThickness="0,0,1,0" Opacity="0.5"/>
+                <Grid Grid.Column="2" Name="SearchColumn3">
+                    <TextBlock Name="SearchColumn3x" Text="公開日時" Opacity="0.8" HorizontalAlignment="Left" Padding="12,0,0,0" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"></TextBlock>
+                </Grid>
+
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="3" BorderBrush="{StaticResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+            <ListBox SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding Entries}" MinHeight="180" SelectionMode="Single" DoubleTapped="ListBox_DoubleTapped" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListBox.Resources>
+                    <!-- Edit: VerticalScrollViewerAnimatedBehavior. -->
+                    <ControlTheme x:Key="{x:Type ListBox}" TargetType="ListBox">
+                        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+                        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseHighBrush}" />
+                        <Setter Property="BorderThickness" Value="{DynamicResource ListBoxBorderThemeThickness}" />
+                        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+                        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                        <Setter Property="ScrollViewer.IsScrollChainingEnabled" Value="True" />
+                        <Setter Property="ScrollViewer.IsScrollInertiaEnabled" Value="True" />
+                        <Setter Property="Template">
+                            <ControlTemplate>
+                                <Border Name="border"
+                                        ClipToBounds="{TemplateBinding ClipToBounds}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="{TemplateBinding CornerRadius}">
+                                    <ScrollViewer Name="PART_ScrollViewer"
+
+                                                  VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}"
+                                                  HorizontalSnapPointsType="{TemplateBinding (ScrollViewer.HorizontalSnapPointsType)}"
+                                                  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                                  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                                  IsScrollInertiaEnabled="{TemplateBinding (ScrollViewer.IsScrollInertiaEnabled)}"
+                                                  IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
+                                                  AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                                  BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}">
+                                        <Interaction.Behaviors>
+                                            <ia:VerticalScrollViewerAnimatedBehavior/>
+                                        </Interaction.Behaviors>
+                                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                                                        Margin="{TemplateBinding Padding}"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter>
+                    </ControlTheme>
+                </ListBox.Resources>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="mod:NoteData">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="150"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Width="{Binding Bounds.Size.Width, ElementName=SearchColumn1}" Text="{Binding Status, Mode=TwoWay}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Padding="12,0,0,0" Opacity="0.9">
+                            </TextBlock>
+                            <TextBlock Grid.Column="1" Width="{Binding Bounds.Size.Width, ElementName=SearchColumn2}" Text="{Binding Title, Mode=OneWay}"  TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Padding="12,0,0,0" Opacity="0.9">
+                            </TextBlock>
+                            <TextBlock Grid.Column="2" Width="{Binding Bounds.Size.Width, ElementName=SearchColumn3}" Text="{Binding PubDateTime, Mode=OneWay}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0" Padding="12,0,0,0" Opacity="0.9">
+                            </TextBlock>
+
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.Styles>
+                    <Style Selector="ListBoxItem" x:DataType="mod:NoteData">
+                        <Setter Property="Height" Value="38"/>
+                        <Setter Property="MinHeight" Value="32"/>
+                        <Setter Property="Padding" Value="0,0,0,0"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="ContextFlyout">
+                            <Setter.Value>
+                                <MenuFlyout>
+                                    <MenuItem Header="ページを開く" Command="{Binding Path=$parent[ListBox].((vm:MainWindowViewModel)DataContext).OpenPageCommand}" CommandParameter="{Binding $parent[ListBox].SelectedItem}">
+                                    </MenuItem>
+                                    <MenuItem Header="フォルダを開く" Command="{Binding Path=$parent[ListBox].((vm:MainWindowViewModel)DataContext).OpenFolderCommand}" CommandParameter="{Binding $parent[ListBox].SelectedItem}">
+                                    </MenuItem>
+                                </MenuFlyout>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.Styles>
+            </ListBox>
+        </Border>
+
+        <Border Grid.Row="4" BorderBrush="{StaticResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0">
+                    <TextBlock Text="{Binding StatusbarMsg}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0 0 6 0" Padding="0" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"></TextBlock>
+                </Border>
+
+                <Border Grid.Column="1">
+                    <TextBlock Text="{Binding StatusbarProgressMsg}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="12 0 6 0" Padding="0" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"></TextBlock>
+                </Border>
+
+                <Border Grid.Column="2">
+                    <ProgressBar Height="20" Width="120" Minimum="0" Maximum="{Binding StatusbarProgressMax}" Value="{Binding StatusbarProgress}" x:Name="progressBar"/>
+                </Border>
+            </Grid>
+        </Border>
+
+    </Grid>
+
+</Window>
